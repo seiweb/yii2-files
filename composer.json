@@ -1,0 +1,20 @@
+{
+    "name": "seiweb/yii2-files",
+    "type": "yii2-extension",
+
+    "minimum-stability": "stable",
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+    "require-dev": {
+        "yiisoft/yii2-codeception": "*",
+        "codeception/specify": "*",
+        "codeception/verify": "*",
+        "mikey179/vfsStream": "1.3.*@dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "seiweb\\files\\": ""
+        }
+    }
+}
