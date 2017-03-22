@@ -132,12 +132,11 @@ class File extends \yii\db\ActiveRecord
              * ......
              */
 
-            $baseDir =$this->getModule()->getStorePath();
-            $subdirs = str_split(sprintf('%08x',$this->id_object),2);
-            $currentDir =$baseDir.DIRECTORY_SEPARATOR. substr(md5($this->model_key),5,10).DIRECTORY_SEPARATOR. implode(DIRECTORY_SEPARATOR,$subdirs);
-            BaseFileHelper::createDirectory($currentDir, 0775, true);
+            $fileDir =$this->getModule()->getStorePath().$this->getSubdirectory();
 
-            $file->saveAs($currentDir . DIRECTORY_SEPARATOR . $this->file_name);
+            BaseFileHelper::createDirectory($fileDir, 0775, true);
+
+            $file->saveAs($fileDir . $this->file_name);
             return $this->save();
         }
         return false;
@@ -153,9 +152,14 @@ class File extends \yii\db\ActiveRecord
         $res = parent::delete();
         if($res)
         {
-            unlink($this->getModule()->getStorePath() . DIRECTORY_SEPARATOR . $this->file_name);
+            unlink($this->getModule()->getStorePath().$this->getSubdirectory() . $this->file_name);
         }
         return $res;
     }
 
+    public function getSubdirectory($glue = DIRECTORY_SEPARATOR){
+        $subdirs = $this->model_key . sprintf('%08x', $this->id_object);
+        $subdirs = substr(md5($subdirs), 5, 8);
+        return $glue . implode($glue, str_split($subdirs, 2)) . $glue;
+    }
 }

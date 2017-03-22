@@ -32,8 +32,6 @@ class FileBehavior extends Behavior
     {
         if ($this->modelKey == null)
             throw new ConfigurationException("Необходимо установить modelKey");
-
-
     }
 
     public function getFileById($id)
@@ -87,11 +85,11 @@ class FileBehavior extends Behavior
     {
         $condition = ['and', 'id_object=:id', 'model_key=:m'];
         $params = ['id' => $this->owner->primaryKey, ':m' => $this->modelKey];
+        $files = File::find()->where($condition, $params)->all();
 
-        $files = File::find()->where($condition, $params)->select('file_name')->column();
-
-        foreach ($files as $file_name) {
-            unlink($this->getModule()->getStorePath() . DIRECTORY_SEPARATOR . $file_name);
+        /** @var File $file */
+        foreach ($files as $file) {
+            unlink($this->getModule()->getStorePath(). $file->getSubdirectory().$file->file_name);
         }
 
         File::deleteAll(['and', 'id_object=:id', 'model_key=:m'], ['id' => $this->owner->primaryKey, ':m' => $this->modelKey]);
