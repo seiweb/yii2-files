@@ -36,22 +36,22 @@ class FileUploadAction extends Action
         $ufile = UploadedFile::getInstanceByName($this->fileAttribute);
 
         $v = new FileValidator();
-        //$v->maxSize = 1024*500;
-        //$v->extensions = ["jpg","png"];
+        $v->maxSize = $this->getModule()->uploadFileMaxSize*1024;
+        $v->extensions = $this->getModule()->allowedFileExtensions;
         $err = "Файл {$ufile->name} загружен";
         if(!$v->validate($ufile,$err))
         {
             Yii::$app->response->setStatusCode(400);
-            return Json::encode(['success'=>false,'message'=>$err]);
+            return Json::encode(['success1'=>false,'message'=>$err]);
         }
 
         if($file->processUpload($ufile)){
-            $res = ['success' => true,'message'=>$err];
+            $res = ['success2' => true,'message'=>$err];
             return Json::encode($res);
         }
 
         //throw new HttpException(400,'bad req');
         Yii::$app->response->setStatusCode(400);
-        return Json::encode(['success'=>false,'message'=>$file->errors]);
+        return Json::encode(['success3'=>false,'message'=>$file->errors]);
     }
 }
